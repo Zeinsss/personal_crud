@@ -41,6 +41,10 @@ class MySqlDatabase
       $stmt->execute($name);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getAllGenre() {
+      $stmt = $this->pdo->query("SELECT * FROM genre WHERE 1");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     // Insert Function
     public function insertUser($name, $email, $password) {
       $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) values (?, ?, ?) ");
@@ -100,4 +104,9 @@ class MySqlDatabase
       $stmt = $this->pdo->prepare("SELECT * FROM `novel_view`");
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-}
+
+  }
+  // Initialize connection with database
+  $database = new MySqlDatabase();
+
+
