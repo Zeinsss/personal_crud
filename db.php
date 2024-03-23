@@ -33,11 +33,11 @@ class MySqlDatabase
     // Novel and User
     // Select Function
     public function getAllAuthor() { 
-      $stmt = $this->pdo->prepare("SELECT * FROM author WHERE 1");
+      $stmt = $this->pdo->query("SELECT * FROM author WHERE 1");
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getAuthorId($name) {
-      $stmt = $this->pdo->prepare("SELECT id FROM author WHERE name = '?'");
+      $stmt = $this->pdo->query("SELECT id FROM author WHERE name = '?'");
       $stmt->execute($name);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -50,31 +50,16 @@ class MySqlDatabase
       $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) values (?, ?, ?) ");
       $stmt->execute([$name, $email, $password]);
     }
-    public function insertNovel($author_name, $name, $description, $language, $image, array $genre) {
-      if ($this->getAuthorId($name) == '' ) {
-        $stmt = $this->pdo->prepare("INSERT INTO author (name) values (?)");
-        $stmt->execute($author_name);
-        $id = $this->pdo->lastInsertId();
-      }
-      else {
-        $author = $this->getAllAuthor();
-        foreach($author as $auth) {
-          if ($auth['name'] == $author_name ) {
-            $id = $this->getAuthorId($author_name);
-            break;
-          }
-        }
-      }
-      $stmt = $this->pdo->prepare("INSERT INTO novel (author_id, name, description, language, image) 
-      values (?, ?, ?, ?, ?, ?) ");
-      $stmt->execute([$id, $name, $description, $language, $image]);
+    public function insertNovel($author_name, $name, $description, $language, $image, $genre) {
+      // Insert Author if there was none of this author yet 
+      $stmt = $this->pdo->prepare("INSERT INTO author (name) values (?) ");
+      $stmt->execute([$author_name]);
+      // Get the last inserted author id
       $id = $this->pdo->lastInsertId();
-      foreach ($genre as $gen) {
-        if (!empty($gen)) {
-            $stmt = $this->pdo->prepare("INSERT INTO `novel-genre` (novel_id, genre_id) VALUES (?, ?)");
-            $stmt->execute([$id, $gen]);
-        }
-      }
+      // Insert Novel
+      $stmt = $this->pdo->prepare("INSERT INTO novel (author_id, genre_id, name, description, language, image) 
+      values (?, ?, ?, ?, ?, ?) ");
+      $stmt->execute([$id, $name, $genre, $description, $language, $image]);
     }
     // Delete Function
     public function deleteUser($id) {

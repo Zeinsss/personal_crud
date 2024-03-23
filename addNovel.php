@@ -47,8 +47,7 @@
 
   }
   $database = new MySqlDatabase();
-  $genre = $database->getAllGenre();
-  print_r($database);
+  $genre_list = $database->getAllGenre();
   // Check if the database connection is right 
 ?>
 <!DOCTYPE html>
@@ -82,16 +81,25 @@
       <tr>
         <td>
           <label for="language">Language: </label>
-          <input type="" name="language" id="language">
+          <select name="language" id="language">
+            <option value="">Select Your Option --</option>
+            <option value="Khmer">Khmer</option>
+            <option value="Chinese">Chinese</option>
+            <option value="English">English</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Korean">Korean</option>
+          </select>
         </td>
       </tr>
       <tr>
         <td>
-          <label for=""></label>
-          <select name="genre" id="genre">Genre: </select>
-            <?php foreach($genre as $gen) {?>
-              <option value="<?=$gen['id']?>"><?=$gen['name']?></option>
-            <?php }?>
+          <label for="genre">Genre:</label>
+          <select name="genre" id="genre<?=$i?>">
+            <option value="">Select Your Option --</option>
+            <?php foreach($genre_list as $genre) { ?>
+            <option value="<?=$genre['id']?>"><?=$genre['name']?></option>
+            <?php } ?>
           </select>
         </td>
       </tr>
