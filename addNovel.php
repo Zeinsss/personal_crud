@@ -38,9 +38,9 @@
       echo "You cannot upload files of this type!";
     }
         $database = new MySqlDatabase();
-        $database->insertUser($name , $pass);
+        $database->insertNovel($author_name, $name, $description, $language, $file_destination, $genre);
       
-        header('Location: index.php');
+        header('Location: viewNovel.php');
         exit();
   }
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -48,7 +48,7 @@
   }
   $database = new MySqlDatabase();
   $genre_list = $database->getAllGenre();
-  // Check if the database connection is right 
+  $author_list = $database->getAllAuthor();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,32 +56,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>View</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <style>
+    button {
+      margin: 5px 15px;
+    }
+    div {
+      margin: 15px;
+    }
+    h1 {
+      margin: 15px 15px;
+    }
+  </style>
 </head>
 <body>
-  <table>
-    <form action="addNovel.php" method="post" enctype="multipart/form-data">
-      <tr>
-        <td>
-          <label for="author_name">Author</label>
-          <input type="text" name="author_name" id="author_name">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="name">Novel Name:</label>
-          <input type="text" name="name" id="name">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="description" style="float:left;">Description:</label>
-          <textarea name="description" id="description" cols="30" rows="10" style="margin-left:25px; float:left;"></textarea>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="language">Language: </label>
-          <select name="language" id="language">
+  <h1>Adding Novel</h1>
+  <a href="viewNovel.php"><button class="btn btn-md btn-primary">Back To View Novel</button></a>
+  <form action="addNovel.php" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="author_name">Author Name</label>
+      <select class="form-control" name="author_name" id="author_name" required>
+        <option value="">Select an option</option>
+        <?php foreach($author_list as $author) {?>
+          <option value="<?=$author['id']?>"><?=$author['name']?></option>
+        <?php }?>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="name">Novel Name</label>
+      <input type="text" class="form-control" name="name" id="name" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="language">Language</label>
+      <select name="language" id="language" required>
             <option value="">Select Your Option --</option>
             <option value="Khmer">Khmer</option>
             <option value="Chinese">Chinese</option>
@@ -90,31 +102,21 @@
             <option value="Japanese">Japanese</option>
             <option value="Korean">Korean</option>
           </select>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="genre">Genre:</label>
-          <select name="genre" id="genre<?=$i?>">
-            <option value="">Select Your Option --</option>
-            <?php foreach($genre_list as $genre) { ?>
-            <option value="<?=$genre['id']?>"><?=$genre['name']?></option>
-            <?php } ?>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="file">File Image:</label>
-          <input type="file" name="file" id="file" accept="image/*">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <input type="submit" value="Submit Novel">
-        </td>
-      </tr>
-    </form>
-  </table>
+    </div>
+    <div class="form-group">
+      <label for="genre">Genre</label>
+      <select class="form-control" name="genre" id="genre" required>
+        <option value="">Select Your Option --</option>
+        <?php foreach($genre_list as $gen) {?>
+          <option value="<?=$gen['id']?>"><?=$gen['name']?></option>
+        <?php }?>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="file">File</label>
+      <input type="file" class="form-control-file" name="file" id="file" required>
+    </div>
+    
+    <button type="submit" class="btn btn-success">Submit</button>
 </body>
 </html>
