@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2024 at 07:14 AM
+-- Generation Time: Mar 24, 2024 at 10:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,19 +32,16 @@ CREATE TABLE `author` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `chapter`
+-- Dumping data for table `author`
 --
 
-CREATE TABLE `chapter` (
-  `id` int(11) NOT NULL,
-  `novel_id` int(11) NOT NULL,
-  `ch_num` int(11) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `content` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `author` (`id`, `name`) VALUES
+(1, 'Nuon Uteytithya'),
+(2, 'Willliam Shakesphere'),
+(3, 'H. P. Lovecraft'),
+(4, 'Test'),
+(5, 'Stephen King');
 
 -- --------------------------------------------------------
 
@@ -54,9 +51,21 @@ CREATE TABLE `chapter` (
 
 CREATE TABLE `favorite` (
   `id` int(11) NOT NULL,
-  `novel_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `novel_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `favorite`
+--
+
+INSERT INTO `favorite` (`id`, `user_id`, `novel_id`) VALUES
+(1, 1, 1),
+(2, 2, 3),
+(3, 3, 2),
+(4, 4, 1),
+(5, 5, 2),
+(6, 6, 3);
 
 -- --------------------------------------------------------
 
@@ -69,6 +78,20 @@ CREATE TABLE `genre` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `genre`
+--
+
+INSERT INTO `genre` (`id`, `name`) VALUES
+(1, 'Fantasy'),
+(2, 'Mystery'),
+(3, 'Comedy'),
+(4, 'Drama'),
+(5, 'Horror'),
+(6, 'Action'),
+(7, 'Psychological'),
+(8, 'Romance');
+
 -- --------------------------------------------------------
 
 --
@@ -77,25 +100,39 @@ CREATE TABLE `genre` (
 
 CREATE TABLE `novel` (
   `id` int(11) NOT NULL,
-  `author_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
+  `author_id` int(11) NOT NULL,
+  `genre_id` int(11) NOT NULL,
   `description` text NOT NULL,
   `language` varchar(50) NOT NULL,
   `published_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image` varchar(100) NOT NULL
+  `image` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `novel`
+--
+
+INSERT INTO `novel` (`id`, `name`, `author_id`, `genre_id`, `description`, `language`, `published_at`, `image`) VALUES
+(1, 'The Call of Cthulhu', 3, 5, 'Call Of Cthulhu', 'English', '2024-03-24 03:27:00', 'uploads\\cthulu.jpg'),
+(2, 'Romeo & Juliet', 2, 4, 'Romeo and Juliet', 'English', '2024-03-24 03:27:00', 'uploads\\romeo.jpg'),
+(3, 'Test', 4, 7, 'Test123', 'Khmer', '2024-03-24 03:27:00', 'uploads\\65fef4d17d3026.74457442.jpg'),
+(4, 'Love ', 1, 8, 'Love is war', 'Japanese', '2024-03-24 03:27:00', 'uploads\\love.jpg'),
+(7, '123', 5, 8, '123', 'Chinese', '2024-03-24 04:25:21', 'uploads/65ffc00c266b82.61206246.jpg');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `novel-genre`
+-- Stand-in structure for view `novel_rating_view`
+-- (See below for the actual view)
 --
-
-CREATE TABLE `novel-genre` (
-  `id` int(11) NOT NULL,
-  `novel_id` int(11) NOT NULL,
-  `genre_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `novel_rating_view` (
+`Cover` varchar(50)
+,`Novel` varchar(50)
+,`Rating` decimal(14,4)
+,`User_Count` bigint(21)
+,`Last_Updated_Rating` datetime
+);
 
 -- --------------------------------------------------------
 
@@ -104,35 +141,14 @@ CREATE TABLE `novel-genre` (
 -- (See below for the actual view)
 --
 CREATE TABLE `novel_view` (
-`Novel_id` int(11)
-,`Novel_name` varchar(50)
+`Id` int(11)
+,`Cover` varchar(50)
+,`Novel` varchar(50)
+,`Author` varchar(50)
 ,`Description` text
 ,`Language` varchar(50)
-,`Image` varchar(100)
-,`Author_name` varchar(50)
-,`Chapter_title` varchar(100)
-,`Chapter_number` int(11)
-,`Content` text
-,`Rating` int(11)
-,`Review_text` text
-,`Review_at` timestamp
 ,`Genre` varchar(50)
-,`Username` varchar(50)
 );
-
--- --------------------------------------------------------
-
---
--- Table structure for table `read_progress`
---
-
-CREATE TABLE `read_progress` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `novel_id` int(11) NOT NULL,
-  `last_read_chapter` int(11) NOT NULL,
-  `last_read_timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -148,6 +164,24 @@ CREATE TABLE `review` (
   `review_text` text NOT NULL,
   `review_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `review`
+--
+
+INSERT INTO `review` (`id`, `user_id`, `novel_id`, `rating`, `review_text`, `review_date`) VALUES
+(1, 1, 1, 10, 'Cool', '2024-03-24 03:32:41'),
+(2, 1, 2, 8, 'Very sad and good plot', '2024-03-24 03:32:41'),
+(3, 2, 1, 7, 'Too scary', '2024-03-24 03:38:49'),
+(4, 3, 2, 6, 'Not interesting', '2024-03-24 03:38:49'),
+(5, 3, 1, 3, 'Not interesting', '2024-03-24 03:39:09'),
+(6, 4, 1, 9, 'Cool', '2024-03-24 03:48:59'),
+(7, 5, 2, 8, 'Cool', '2024-03-24 03:48:59'),
+(8, 4, 3, 6, 'Test', '2024-03-24 03:48:59'),
+(9, 4, 2, 8, 'Cool', '2024-03-24 03:48:59'),
+(10, 5, 1, 7, 'T', '2024-03-24 03:48:59'),
+(11, 1, 4, 5, 'Mid', '2024-03-24 04:10:50'),
+(12, 1, 3, 7, 'test123', '2024-03-24 09:32:28');
 
 -- --------------------------------------------------------
 
@@ -167,10 +201,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
-(1, 'Nuon Uteytithya', '123@gmail.com', '202cb962ac59075b964b07152d234b70'),
-(2, 'Nuon Uteytithya', '123@gmail.com', '202cb962ac59075b964b07152d234b70'),
-(3, 'tithya', '2343@gmail.com', '202cb962ac59075b964b07152d234b70'),
-(4, 'tithya', '123@gmail.com', '202cb962ac59075b964b07152d234b70');
+(1, 'Tithya', 'tithyautey@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b'),
+(2, 'user', 'user@email.com', '393645bf994114c23be28028a47a77a0'),
+(3, 'visal', 'visal@gmail.com', '202cb962ac59075b964b07152d234b70'),
+(4, 'dummy', '123@gmail.com', 'fcea920f7412b5da7be0cf42b8c93759'),
+(5, 'tithya', 'tithyautey@gmail.com', '88299d66994c8abfe63c6bd0d6c1923d'),
+(6, '12345', '123@gmail.com', '1f32aa4c9a1d2ea010adcf2348166a04');
 
 -- --------------------------------------------------------
 
@@ -179,18 +215,21 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
 -- (See below for the actual view)
 --
 CREATE TABLE `user_view` (
-`User_Id` int(11)
+`Id` int(11)
+,`Novel_id` int(11)
 ,`Username` varchar(50)
 ,`Email` varchar(50)
-,`Last_read_chapter` int(11)
-,`Last_read_date` timestamp
-,`Novel_name` varchar(50)
-,`Image` varchar(100)
-,`Rating` int(11)
-,`Review_text` text
-,`Review_at` timestamp
-,`Chapter_number` int(11)
+,`Favorite_Novel` varchar(50)
 );
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `novel_rating_view`
+--
+DROP TABLE IF EXISTS `novel_rating_view`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `novel_rating_view`  AS SELECT `n`.`image` AS `Cover`, `n`.`name` AS `Novel`, avg(`r`.`rating`) AS `Rating`, count(`r`.`id`) AS `User_Count`, current_timestamp() AS `Last_Updated_Rating` FROM (`review` `r` join `novel` `n` on(`r`.`novel_id` = `n`.`id`)) GROUP BY `n`.`name` ORDER BY avg(`r`.`rating`) DESC ;
 
 -- --------------------------------------------------------
 
@@ -199,7 +238,7 @@ CREATE TABLE `user_view` (
 --
 DROP TABLE IF EXISTS `novel_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `novel_view`  AS SELECT `n`.`id` AS `Novel_id`, `n`.`name` AS `Novel_name`, `n`.`description` AS `Description`, `n`.`language` AS `Language`, `n`.`image` AS `Image`, `a`.`name` AS `Author_name`, `c`.`title` AS `Chapter_title`, `c`.`ch_num` AS `Chapter_number`, `c`.`content` AS `Content`, `r`.`rating` AS `Rating`, `r`.`review_text` AS `Review_text`, `r`.`review_date` AS `Review_at`, `g`.`name` AS `Genre`, `u`.`name` AS `Username` FROM ((((((`novel` `n` join `author` `a` on(`a`.`id` = `n`.`author_id`)) join `review` `r` on(`n`.`id` = `r`.`novel_id`)) join `chapter` `c` on(`n`.`id` = `c`.`novel_id`)) join `novel-genre` `ng` on(`n`.`id` = `ng`.`novel_id`)) join `genre` `g` on(`g`.`id` = `ng`.`genre_id`)) join `users` `u` on(`u`.`id` = `r`.`user_id`)) ORDER BY `n`.`id` ASC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `novel_view`  AS SELECT `n`.`id` AS `Id`, `n`.`image` AS `Cover`, `n`.`name` AS `Novel`, `a`.`name` AS `Author`, `n`.`description` AS `Description`, `n`.`language` AS `Language`, `g`.`name` AS `Genre` FROM ((`novel` `n` join `author` `a` on(`a`.`id` = `n`.`author_id`)) join `genre` `g` on(`g`.`id` = `n`.`genre_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -208,7 +247,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `user_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_view`  AS SELECT `u`.`id` AS `User_Id`, `u`.`name` AS `Username`, `u`.`email` AS `Email`, `rp`.`last_read_chapter` AS `Last_read_chapter`, `rp`.`last_read_timestamp` AS `Last_read_date`, `n`.`name` AS `Novel_name`, `n`.`image` AS `Image`, `r`.`rating` AS `Rating`, `r`.`review_text` AS `Review_text`, `r`.`review_date` AS `Review_at`, `c`.`ch_num` AS `Chapter_number` FROM (((((`users` `u` join `favorite` `f` on(`u`.`id` = `f`.`user_id`)) join `review` `r` on(`u`.`id` = `r`.`user_id`)) join `read_progress` `rp` on(`u`.`id` = `rp`.`user_id`)) join `novel` `n` on(`n`.`id` = `rp`.`novel_id`)) join `chapter` `c` on(`n`.`id` = `c`.`novel_id`)) ORDER BY `u`.`id` ASC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_view`  AS SELECT `u`.`id` AS `Id`, `n`.`id` AS `Novel_id`, `u`.`name` AS `Username`, `u`.`email` AS `Email`, `n`.`name` AS `Favorite_Novel` FROM ((`users` `u` join `favorite` `f` on(`u`.`id` = `f`.`user_id`)) join `novel` `n` on(`n`.`id` = `f`.`novel_id`)) ORDER BY `u`.`id` ASC ;
 
 --
 -- Indexes for dumped tables
@@ -221,19 +260,12 @@ ALTER TABLE `author`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `chapter`
---
-ALTER TABLE `chapter`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `novel_id` (`novel_id`);
-
---
 -- Indexes for table `favorite`
 --
 ALTER TABLE `favorite`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `novel_id` (`novel_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`,`novel_id`),
+  ADD KEY `novel_id` (`novel_id`);
 
 --
 -- Indexes for table `genre`
@@ -246,24 +278,8 @@ ALTER TABLE `genre`
 --
 ALTER TABLE `novel`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `authorId` (`author_id`),
+  ADD KEY `genre_id` (`genre_id`),
   ADD KEY `author_id` (`author_id`);
-
---
--- Indexes for table `novel-genre`
---
-ALTER TABLE `novel-genre`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `novel_id` (`novel_id`),
-  ADD KEY `genre_id` (`genre_id`);
-
---
--- Indexes for table `read_progress`
---
-ALTER TABLE `read_progress`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `novel_id` (`novel_id`);
 
 --
 -- Indexes for table `review`
@@ -287,99 +303,62 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `author`
 --
 ALTER TABLE `author`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `chapter`
---
-ALTER TABLE `chapter`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `favorite`
 --
 ALTER TABLE `favorite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `genre`
 --
 ALTER TABLE `genre`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `novel`
 --
 ALTER TABLE `novel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `novel-genre`
---
-ALTER TABLE `novel-genre`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `read_progress`
---
-ALTER TABLE `read_progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `chapter`
---
-ALTER TABLE `chapter`
-  ADD CONSTRAINT `chapter_ibfk_1` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `favorite`
 --
 ALTER TABLE `favorite`
-  ADD CONSTRAINT `favorite_ibfk_1` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `favorite_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `favorite_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `favorite_ibfk_2` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `novel`
 --
 ALTER TABLE `novel`
-  ADD CONSTRAINT `novel_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `author` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `novel-genre`
---
-ALTER TABLE `novel-genre`
-  ADD CONSTRAINT `novel-genre_ibfk_1` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `novel-genre_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `read_progress`
---
-ALTER TABLE `read_progress`
-  ADD CONSTRAINT `read_progress_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `read_progress_ibfk_2` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `novel_ibfk_1` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `novel_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `author` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `review`
 --
 ALTER TABLE `review`
-  ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `review_ibfk_2` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`novel_id`) REFERENCES `novel` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `review_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
