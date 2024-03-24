@@ -23,7 +23,7 @@
           move_uploaded_file($file_tmp, $file_destination);
           $database = new MySqlDatabase();
           $database->insertNovel($author_name, $name, $description, $language, $file_destination, $genre);
-          header('Location: index.php');
+          header('Location: viewNovel.php');
           exit();
         }
         else {
@@ -37,11 +37,6 @@
     else {
       echo "You cannot upload files of this type!";
     }
-        $database = new MySqlDatabase();
-        $database->insertNovel($author_name, $name, $description, $language, $file_destination, $genre);
-      
-        header('Location: viewNovel.php');
-        exit();
   }
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
@@ -49,6 +44,7 @@
   $database = new MySqlDatabase();
   $genre_list = $database->getAllGenre();
   $author_list = $database->getAllAuthor();
+  $language = array('Khmer', 'Chinese', 'English', 'Indonesia', 'Japanese', 'Korean');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,7 +72,7 @@
   <form action="addNovel.php" method="post" enctype="multipart/form-data">
     <div class="form-group">
       <label for="author_name">Author Name</label>
-      <select class="form-control" name="author_name" id="author_name" required>
+      <select class="form-select" name="author_name" id="author_name" required>
         <option value="">Select an option</option>
         <?php foreach($author_list as $author) {?>
           <option value="<?=$author['id']?>"><?=$author['name']?></option>
@@ -94,18 +90,15 @@
     <div class="form-group">
       <label for="language">Language</label>
       <select name="language" id="language" required>
-            <option value="">Select Your Option --</option>
-            <option value="Khmer">Khmer</option>
-            <option value="Chinese">Chinese</option>
-            <option value="English">English</option>
-            <option value="Indonesia">Indonesia</option>
-            <option value="Japanese">Japanese</option>
-            <option value="Korean">Korean</option>
-          </select>
+        <option value="">Select Your Option --</option>
+        <?php foreach($language as $lang) {?>
+          <option value="<?=$lang?>"><?=$lang?></option>
+        <?php }?>
+      </select>
     </div>
     <div class="form-group">
       <label for="genre">Genre</label>
-      <select class="form-control" name="genre" id="genre" required>
+      <select class="form-select" name="genre" id="genre" required>
         <option value="">Select Your Option --</option>
         <?php foreach($genre_list as $gen) {?>
           <option value="<?=$gen['id']?>"><?=$gen['name']?></option>

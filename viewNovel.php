@@ -22,8 +22,10 @@
     </tr>
     <tr>
       <td>
-        <a href="addNovel.php"><button class="btn btn-primary">Add Novel</button></a>
+        <a href="addNovel.php"><button class="btn btn-success">Add Novel</button></a>
         <a href="viewUser.php"><button class="btn btn-primary">View User </button></a>
+        <a href="viewNovelRating.php"><button class="btn btn-primary">View Novel's Rating</button></a>
+        <a href="index.php"><button class="btn btn-info">Go to Dashboard </button></a>
       </td>
     </tr>
     <tr>
@@ -54,7 +56,7 @@
               <td><?=$novel['Description']?></td>
               <td><?=$novel['Language']?></td>
               <td><?=$novel['Genre']?></td>
-              <td><a href="editNovel.php?id=<?=$novel['Id']?>">Edit</a> | <a href="deleteNovel.php?id=<?=$novel['Id']?>">Delete</a></td>
+              <td><a href="editNovel.php?id=<?=$novel['Id']?>"><button class="btn btn-warning">Edit</button></a> | <a href="deleteNovel.php?id=<?=$novel['Id']?>"><button class="btn btn-danger">Delete</button></a></td>
             </tr>
           <?php }?>
         </tbody>

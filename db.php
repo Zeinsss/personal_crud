@@ -49,8 +49,25 @@ class MySqlDatabase
       $stmt = $this->pdo->query("SELECT * FROM novel WHERE 1");
       return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
+    public function getAllNovelRating() {
+      $stmt = $this->pdo->query("SELECT * FROM novel_rating_view WHERE 1");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function getAllUser() {
       $stmt = $this->pdo->query("SELECT * FROM `user_view` WHERE 1");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getNovelByIdViaView($id) {
+      $stmt = $this->pdo->prepare("SELECT * FROM `user_view` WHERE id = ?");
+      $stmt->execute([$id]);
+      return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getAllUsers() {
+      $stmt = $this->pdo->query("SELECT * FROM users WHERE 1");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getAllReview() {
+      $stmt = $this->pdo->query("SELECT * FROM review WHERE 1");
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Insert Function
@@ -67,6 +84,10 @@ class MySqlDatabase
     public function insertFavoriteNovel($user_id, $novel_id) {
       $stmt = $this->pdo->prepare("INSERT INTO favorite (user_id, novel_id) values (?, ?) ");
       $stmt->execute([$user_id, $novel_id]);
+    }
+    public function insertRating($user_id, $novel_id, $rating, $review_text) {
+      $stmt = $this->pdo->prepare("INSERT INTO review (user_id, novel_id, rating, review_text) values (?, ?, ?, ?) ");
+      $stmt->execute([$user_id, $novel_id, $rating, $review_text]);
     }
     // Delete Function
     public function deleteUser($id) {
@@ -88,8 +109,21 @@ class MySqlDatabase
       $stmt->execute($id);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // Update Function
+    public function updateUser($id, $name, $email, $password, $favorite_novel) {
+      $stmt = $this->pdo->prepare("UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?");
+      $stmt->execute([$name, $email, $password, $id]);
+      $this->updateFavoriteNovel($id, $favorite_novel);
+    }
+    public function updateNovel($id, $author_name, $name, $description, $language, $image, $genre) {
+      $stmt = $this->pdo->prepare("UPDATE novel SET author_id = ?, name = ?, description = ?, language = ?, image = ?, genre_id = ? WHERE id = ?");
+      $stmt->execute([$author_name, $name, $description, $language, $image, $genre, $id]);
+    }
+    public function updateFavoriteNovel($user_id, $novel_id) {
+      $stmt = $this->pdo->prepare("UPDATE favorite SET novel_id = ? WHERE user_id = ?");
+      $stmt->execute([$novel_id, $user_id]);
+    }
   }
-  // Initialize connection with database
-  $database = new MySqlDatabase();
+
 
 

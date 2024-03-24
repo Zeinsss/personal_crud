@@ -1,13 +1,8 @@
 <?php
   require ('db.php');
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-  }
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-
-  }
-  $database = new MySqlDatabase();
-  $users = $database->getAllUser();
+    $database = new MySqlDatabase();
+    $novel = $database->getAllNovelRating();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,46 +17,44 @@
   <table class="table table-md">
     <tr>
       <td>
-        <h1>User View</h1>
+        <h1>Novel's Rating</h1>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="addUser.php"><button class="btn btn-success">Add User</button></a>
         <a href="viewNovel.php"><button class="btn btn-primary">View Novel </button></a>
+        <a href="AddRating.php"><button class="btn btn-success">Add Rating </button></a>
         <a href="index.php"><button class="btn btn-info">Go to Dashboard </button></a>
       </td>
     </tr>
-    
     <tr>
       <td>
         <table class="table table-sm">
           <thead>
-            <caption>List of Users</caption>
+            <caption>List of Novel's Rating</caption>
           <tr>
             <th scope="col">No</th>
-            <th scope="col">Name</th>  
-            <th scope="col">Email</th>
-            <th scope="col">Favorite Novel</th>
-            <th scope="col">Action</th>
+            <th scope="col">Cover</th>
+            <th scope="col">Novel</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Last Updated</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
           <?php
           $no = 1;
-          foreach($users as $user) {?>
+          foreach($novel as $novel) {?>
             <tr>
               <td><?=$no++?></td>
-              <td><?=$user['Username']?></td>
-              <td><?=$user['Email']?></td>
-              <td><?=$user['Favorite_Novel']?></td>
-              <td><a href="editUser.php?id=<?=$user['Id']?>"><button class="btn btn-warning">Edit</button></a> | <a href="deleteUser.php?id=<?=$user['Id']?>"><button class="btn btn-danger">Delete</button></a></td>
+              <td><img src="<?=$novel['Cover']?>" alt="Cover" width="100px" height="100px"></td>
+              <td><?=$novel['Novel']?></td>
+              <td><?=$novel['Rating']?>/10 Of <?=$novel['User_Count']?> Users</td>
+              <td><?=$novel['Last_Updated_Rating']?></td>
             </tr>
           <?php }?>
         </tbody>
         </table>
       </td>
-    </tr>
-  </table>  
+  </table>
 </body>
 </html>

@@ -27,6 +27,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <style>
+    a button {
+      margin: 15px 15px;
+    }
     button {
       margin: 15px 0px;
     }
@@ -40,6 +43,7 @@
 </head>
 <body>
   <h1>Add User</h1>
+  <a href="viewUser.php"><button class="btn btn-primary">View User</button></a>
   <form action="addUser.php" method="post" enctype="multipart/form-data">
     <div class="form-group">
       <label for="name">Name</label>
@@ -55,7 +59,7 @@
     </div>
     <div class="form-group">
       <label for="favorite_novel">Favorite Novel</label>
-      <select class="form-control" name="favorite_novel" id="favorite_novel" required>
+      <select class="form-select" name="favorite_novel" id="favorite_novel" required>
         <option value="">Select an option</option>
         <?php foreach($novels as $novel) {?>
           <option value="<?=$novel['id']?>"><?=$novel['name']?></option>
